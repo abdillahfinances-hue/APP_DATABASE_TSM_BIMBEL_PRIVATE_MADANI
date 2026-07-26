@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM Leads — Bimbel Private Madani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2b22;
+    --paper:#f7f4ec;
+    --panel:#ffffff;
+    --emerald:#123c2c;
+    --emerald-2:#1d5a41;
+    --gold:#b98a2e;
+    --gold-soft:#e7d3a1;
+    --line:#dcd4bf;
+    --danger:#a3402f;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Plus Jakarta Sans', sans-serif;-webkit-font-smoothing:antialiased;}
+  .arch-header{position:relative;background:linear-gradient(180deg, var(--emerald) 0%, var(--emerald-2) 100%);color:#f4efe0;padding:34px 24px 50px;text-align:center;overflow:hidden;}
+  .arch-header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:30px;background:var(--paper);border-radius:50% 50% 0 0 / 100% 100% 0 0;}
+  .arch-header .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft);font-weight:600;}
+  .arch-header h1{font-family:'Amiri', serif;font-weight:700;font-size:clamp(24px,5vw,34px);margin:8px 0 4px;}
+  .arch-header p{margin:0;opacity:.85;font-size:13.5px;}
+  .tabs{max-width:760px;margin:-24px auto 0;position:relative;z-index:2;display:flex;gap:8px;background:var(--panel);padding:6px;border-radius:999px;box-shadow:0 8px 24px rgba(18,60,44,.14);}
+  .tab{flex:1;text-align:center;padding:11px 8px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;color:var(--emerald);user-select:none;}
+  .tab.active{background:var(--emerald);color:#fff;}
+  main{max-width:760px;margin:0 auto;padding:26px 16px 80px;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px;}
+  .card h2{font-family:'Amiri', serif;font-size:18px;margin:0 0 4px;color:var(--emerald);}
+  .card .sub{font-size:12.5px;color:#6b6153;margin:0 0 14px;}
+  label{display:block;font-size:12.5px;font-weight:700;color:var(--emerald);margin:12px 0 6px;}
+  label .opt{font-weight:500;color:#8a8071;}
+  input[type=text],input[type=number],textarea,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:14px;background:#fdfcf8;color:var(--ink);}
+  textarea{resize:vertical;min-height:60px;}
+  input:focus,textarea:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold);}
+  .chip-group{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{border:1px solid var(--line);background:#fdfcf8;padding:8px 14px;border-radius:999px;font-size:13px;cursor:pointer;user-select:none;}
+  .chip.sel{background:var(--emerald);border-color:var(--emerald);color:#fff;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--emerald);color:#fff;border:none;padding:13px 20px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;width:100%;margin-top:6px;}
+  .btn.gold{background:var(--gold);}
+  .btn.ghost{background:transparent;color:var(--emerald);border:1.5px solid var(--emerald);}
+  .btn.small{width:auto;padding:7px 12px;font-size:12px;}
+  .msg{font-size:13px;padding:10px 12px;border-radius:8px;margin-top:10px;display:none;}
+  .msg.ok{background:#e4f0e6;color:var(--emerald);display:block;}
+  .msg.err{background:#f6e3de;color:var(--danger);display:block;}
+  .req::after{content:" *";color:var(--danger);}
+  .notice{background:#fbf1de;border:1px solid var(--gold-soft);color:#6b5119;font-size:12.5px;padding:11px 13px;border-radius:9px;margin-bottom:14px;line-height:1.5;}
+
+  .filter-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+  .filter-chip{border:1px solid var(--line);background:#fdfcf8;padding:6px 12px;border-radius:999px;font-size:12px;cursor:pointer;font-weight:600;}
+  .filter-chip.active{background:var(--emerald);color:#fff;border-color:var(--emerald);}
+
+  .lead-card{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px;background:#fdfcf8;}
+  .lead-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .lead-card h3{margin:0;font-size:15px;color:var(--emerald);}
+  .lead-card .meta{font-size:12.5px;color:#5c5445;margin-top:6px;line-height:1.7;}
+  .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;color:#fff;white-space:nowrap;}
+  .b-aktif{background:#2f8f4e;}
+  .b-norespon{background:#c99a2e;}
+  .b-prospek{background:#3b7ec7;}
+  .b-trial{background:#8b5fbf;}
+  .b-deal{background:#1d5a41;}
+  .b-tidak{background:#a3402f;}
+  .update-row{display:flex;gap:6px;margin-top:10px;}
+  .update-row select{flex:1;font-size:12.5px;padding:8px;}
+  .empty{text-align:center;color:#8a8071;font-size:13px;padding:30px 10px;}
+</style>
+</head>
+<body>
+
+<div class="arch-header">
+  <div class="eyebrow">Bimbel Private Madani</div>
+  <h1>CRM Leads Sales Marketing</h1>
+  <p>Input & pantau calon siswa dari awal kontak sampai daftar</p>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="input">Input Leads</div>
+  <div class="tab" data-tab="dashboard">Dashboard</div>
+</div>
+
+<main>
+  <!-- ===== INPUT LEADS ===== -->
+  <section class="panel active" id="panel-input">
+    <div class="card">
+      <h2>Data Calon Siswa</h2>
+      <p class="sub">Isi setiap ada leads/calon siswa baru masuk.</p>
+
+      <label class="req">Nama Calon Siswa</label>
+      <input type="text" id="l-nama-siswa">
+
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;">
+          <label class="req">Usia Anak</label>
+          <input type="number" id="l-usia" placeholder="Tahun">
+        </div>
+        <div style="flex:1;">
+          <label class="req">Jenjang/Kelas</label>
+          <select id="l-jenjang">
+            <option value="">Pilih...</option>
+            <option>TK</option><option>SD</option><option>SMP</option><option>SMA</option><option>Kuliah</option><option>Dewasa</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="req">Asal Sekolah</label>
+      <input type="text" id="l-sekolah">
+
+      <div class="notice">📞 Program yang dipilih pakai singkatan Madani: <b>KMPU</b> = Mapel Umum · <b>KMPI</b> = Mengaji & PAI · <b>KBA</b> = Bahasa Asing</div>
+      <label class="req">Program yang Diminati <span class="opt">(bisa lebih dari satu)</span></label>
+      <div class="chip-group" id="l-program-group">
+        <div class="chip" data-val="KMPU">KMPU</div>
+        <div class="chip" data-val="KMPI">KMPI</div>
+        <div class="chip" data-val="KBA">KBA</div>
+      </div>
+
+      <label class="req">Nama Orang Tua/Wali</label>
+      <input type="text" id="l-nama-ortu">
+
+      <label class="req">No. HP/WA Orang Tua</label>
+      <input type="text" id="l-hp-ortu" placeholder="08...">
+
+      <label>Pekerjaan Orang Tua <span class="opt">(opsional)</span></label>
+      <input type="text" id="l-pekerjaan">
+
+      <label>Alamat <span class="opt">(opsional)</span></label>
+      <textarea id="l-alamat"></textarea>
+
+      <label class="req">Sumber Leads</label>
+      <select id="l-sumber">
+        <option value="">Pilih...</option>
+        <option>Ads</option><option>Event</option><option>Referral</option><option>Walk-in</option><option>Sosial Media</option><option>Lainnya</option>
+      </select>
+
+      <label class="req">Nama Sales yang Handle</label>
+      <input type="text" id="l-sales" list="sales-list" autocomplete="off">
+      <datalist id="sales-list"></datalist>
+
+      <label>Catatan <span class="opt">(opsional)</span></label>
+      <textarea id="l-catatan" placeholder="Info tambahan, hasil percakapan, dll"></textarea>
+
+      <button class="btn gold" onclick="saveLead()">Simpan Leads</button>
+      <div class="msg" id="l-msg"></div>
+    </div>
+  </section>
+
+  <!-- ===== DASHBOARD ===== -->
+  <section class="panel" id="panel-dashboard">
+    <div class="card">
+      <h2>Dashboard Leads</h2>
+      <p class="sub">Pantau status semua calon siswa.</p>
+      <button class="btn ghost" onclick="loadLeads()">Muat Ulang Data</button>
+
+      <div class="filter-row" id="filter-status" style="margin-top:14px;"></div>
+      <div id="leads-list"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+// ⚠️ GANTI URL DI BAWAH INI dengan URL Web App dari Google Apps Script kamu
+const CONFIG = { WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyytR8-2fAtPCH1M4yae6aloUkloqkf7GydkjZbNCRj5RT7qKvj3dy1ik-eH7EPYU6uCQ/exec' };
+
+const STATUS_LIST = [
+  {val:'Aktif Respon', cls:'b-aktif', emoji:'🟢'},
+  {val:'No Respon', cls:'b-norespon', emoji:'🟡'},
+  {val:'Prospek', cls:'b-prospek', emoji:'🔵'},
+  {val:'Trial Class', cls:'b-trial', emoji:'🟣'},
+  {val:'Deal/Daftar', cls:'b-deal', emoji:'✅'},
+  {val:'Tidak Berminat', cls:'b-tidak', emoji:'🔴'}
+];
+
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-'+tab.dataset.tab).classList.add('active');
+    if(tab.dataset.tab==='dashboard') loadLeads();
+    if(tab.dataset.tab==='input') loadSalesNames();
+  });
+});
+
+document.getElementById('l-program-group').querySelectorAll('.chip').forEach(chip=>{
+  chip.addEventListener('click', ()=> chip.classList.toggle('sel'));
+});
+
+function storageAvailable(){
+  return CONFIG.WEB_APP_URL && CONFIG.WEB_APP_URL !== 'PASTE_URL_WEB_APP_DI_SINI';
+}
+
+function showMsg(id, text, ok){
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg ' + (ok ? 'ok' : 'err');
+}
+
+async function loadSalesNames(){
+  if(!storageAvailable()) return;
+  try{
+    const res = await fetch(CONFIG.WEB_APP_URL + '?type=leads');
+    const leads = await res.json();
+    const names = [...new Set(leads.map(l=>l.salesHandle).filter(Boolean))];
+    document.getElementById('sales-list').innerHTML = names.map(n=>`<option value="${n}">`).join('');
+  }catch(e){}
+}
+
+async function saveLead(){
+  if(!storageAvailable()){ showMsg('l-msg','Form belum tersambung ke database. Hubungi admin.', false); return; }
+  const namaSiswa = document.getElementById('l-nama-siswa').value.trim();
+  const namaOrtu = document.getElementById('l-nama-ortu').value.trim();
+  const hpOrtu = document.getElementById('l-hp-ortu').value.trim();
+  const sales = document.getElementById('l-sales').value.trim();
+  if(!namaSiswa || !namaOrtu || !hpOrtu || !sales){
+    showMsg('l-msg','Nama siswa, nama ortu, No. HP ortu, dan nama sales wajib diisi.', false); return;
+  }
+
+  const data = {
+    type: 'lead',
+    id: 'lead_' + Date.now() + '_' + Math.floor(Math.random()*1000),
+    namaSiswa,
+    usiaAnak: document.getElementById('l-usia').value,
+    jenjang: document.getElementById('l-jenjang').value,
+    asalSekolah: document.getElementById('l-sekolah').value,
+    programDiminati: Array.from(document.querySelectorAll('#l-program-group .chip.sel')).map(c=>c.dataset.val).join('+'),
+    namaOrtu, hpOrtu,
+    pekerjaanOrtu: document.getElementById('l-pekerjaan').value,
+    alamat: document.getElementById('l-alamat').value,
+    sumberLeads: document.getElementById('l-sumber').value,
+    statusFollowUp: 'No Respon',
+    salesHandle: sales,
+    catatan: document.getElementById('l-catatan').value
+  };
+
+  try{
+    await fetch(CONFIG.WEB_APP_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(data)
+    });
+    showMsg('l-msg','Tersimpan! Leads ' + namaSiswa + ' berhasil dicatat.', true);
+    document.getElementById('l-nama-siswa').value='';
+    document.getElementById('l-usia').value='';
+    document.getElementById('l-jenjang').value='';
+    document.getElementById('l-sekolah').value='';
+    document.getElementById('l-nama-ortu').value='';
+    document.getElementById('l-hp-ortu').value='';
+    document.getElementById('l-pekerjaan').value='';
+    document.getElementById('l-alamat').value='';
+    document.getElementById('l-sumber').value='';
+    document.getElementById('l-catatan').value='';
+    document.querySelectorAll('#l-program-group .chip').forEach(c=>c.classList.remove('sel'));
+  }catch(err){
+    showMsg('l-msg','Terjadi kesalahan: ' + err.message, false);
+  }
+}
+
+let currentFilter = 'Semua';
+window._allLeads = [];
+
+async function loadLeads(){
+  const listEl = document.getElementById('leads-list');
+  if(!storageAvailable()){ listEl.innerHTML = '<div class="empty">Form belum tersambung ke database.</div>'; return; }
+  listEl.innerHTML = '<div class="empty">Memuat data...</div>';
+
+  const filterEl = document.getElementById('filter-status');
+  filterEl.innerHTML = ['Semua', ...STATUS_LIST.map(s=>s.val)].map(s=>
+    `<div class="filter-chip ${s===currentFilter?'active':''}" onclick="setFilter('${s}')">${s}</div>`
+  ).join('');
+
+  try{
+    const res = await fetch(CONFIG.WEB_APP_URL + '?type=leads');
+    const leads = await res.json();
+    window._allLeads = leads;
+    renderLeads();
+  }catch(e){
+    listEl.innerHTML = '<div class="empty">Gagal memuat data.</div>';
+  }
+}
+
+function setFilter(status){
+  currentFilter = status;
+  loadLeads();
+}
+
+function renderLeads(){
+  const listEl = document.getElementById('leads-list');
+  let leads = window._allLeads;
+  if(currentFilter !== 'Semua') leads = leads.filter(l => l.statusFollowUp === currentFilter);
+
+  if(leads.length === 0){
+    listEl.innerHTML = '<div class="empty">Belum ada leads untuk status ini.</div>';
+    return;
+  }
+
+  listEl.innerHTML = '';
+  leads.slice().reverse().forEach(l=>{
+    const st = STATUS_LIST.find(s=>s.val===l.statusFollowUp) || STATUS_LIST[1];
+    const div = document.createElement('div');
+    div.className = 'lead-card';
+    div.innerHTML = `
+      <div class="top">
+        <h3>${l.namaSiswa}</h3>
+        <span class="badge ${st.cls}">${st.emoji} ${st.val}</span>
+      </div>
+      <div class="meta">
+        Usia: ${l.usiaAnak||'-'} · Jenjang: ${l.jenjang||'-'} · Sekolah: ${l.asalSekolah||'-'}<br>
+        Program: ${l.programDiminati||'-'} · Sumber: ${l.sumberLeads||'-'}<br>
+        Ortu: ${l.namaOrtu||'-'} — ${l.hpOrtu||'-'}<br>
+        Sales: ${l.salesHandle||'-'}<br>
+        ${l.catatan ? 'Catatan: '+l.catatan : ''}
+      </div>
+      <div class="update-row">
+        <select id="status-${l.id}">
+          ${STATUS_LIST.map(s=>`<option value="${s.val}" ${s.val===l.statusFollowUp?'selected':''}>${s.emoji} ${s.val}</option>`).join('')}
+        </select>
+        <button class="btn small gold" onclick="updateStatus('${l.id}')">Update</button>
+      </div>
+    `;
+    listEl.appendChild(div);
+  });
+}
+
+async function updateStatus(id){
+  const newStatus = document.getElementById('status-'+id).value;
+  try{
+    await fetch(CONFIG.WEB_APP_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ type:'updateStatus', id, statusFollowUp:newStatus })
+    });
+    const lead = window._allLeads.find(l=>l.id===id);
+    if(lead) lead.statusFollowUp = newStatus;
+    renderLeads();
+  }catch(err){
+    alert('Gagal update status: ' + err.message);
+  }
+}
+</script>
+</body>
+</html>
